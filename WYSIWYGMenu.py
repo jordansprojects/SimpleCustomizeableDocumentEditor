@@ -1,21 +1,22 @@
 import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QTextEdit, QPushButton, QToolBar, QAction, QComboBox
-from PyQt5.QtGui import QFontDatabase 
+from PyQt5.QtGui import * 
 '''
   Simple WYSIWYG Menu that can be added to a PyQt project with a textbox 
 '''
 class WYSIWYGMenu(QToolBar):
     # constructor requires a QTextEdit parameter so that it knows what text to format and modify
-    def __init__(self, textEdit: QTextEdit ):
+    def __init__(self, text_edit: QTextEdit ):
         # Constants
         self.BOLD = 75
         self.DEFAULT =  50
         super().__init__() 
-        self.textEdit = textEdit
+        self.text_edit = text_edit
         self.createMenu()
 
-
+        # for now we will have the toolbar be white
+        self.setStyleSheet("background-color : white;")
     '''
     createMenu : called by constructor.  Populates toolbar with components such as buttons for bold,italic, and underline and a QComboBox for selecting Fonts 
     '''
@@ -34,6 +35,21 @@ class WYSIWYGMenu(QToolBar):
         underline_action = QAction('Underline', self)
         underline_action.setShortcut('Ctrl+U')
         underline_action.triggered.connect(self.underline)
+
+
+        # create center-align button
+        align_center_action = QAction('Align Center', self)
+        align_center_action.triggered.connect(self.setCenter)
+
+        # create left-align button
+        align_left_action = QAction('Align Left', self)
+        align_left_action.triggered.connect(self.setLeft)
+
+
+        # create right-align button
+        align_right_action = QAction('Align Right', self)
+        align_right_action.triggered.connect(self.setRight)
+
 
         # add actions to toolbar
         self.addAction(bold_action)
@@ -56,13 +72,28 @@ class WYSIWYGMenu(QToolBar):
         sizeComboBox.setCurrentIndex(2); # set default font size
         self.addWidget(sizeComboBox)
 
+        self.addAction(align_right_action)
+        self.addAction(align_center_action)
+        self.addAction(align_left_action)
+
 
 
 ## FONT FORMATTING FUNCTIONS : 
-    
+# this needs work too
+
+    def setCenter(self):
+         self.text_edit.setAlignment(Qt.AlignCenter)
+
+    def setLeft(self):
+        self.text_edit.setAlignment(Qt.AlignLeft)
+
+    def setRight(self):
+        self.text_edit.setAlignment(Qt.AlignRight)
+
+
     def setSize(self, size):
-        self.textEdit.setFontPointSize(int(size))    
-        cursor = self.textEdit.textCursor()
+        self.text_edit.setFontPointSize(int(size))    
+        cursor = self.text_edit.textCursor()
         if not cursor.hasSelection():
             return
         format = cursor.charFormat()
@@ -70,8 +101,8 @@ class WYSIWYGMenu(QToolBar):
         cursor.mergeCharFormat(format)
 
     def setFont(self, font):
-        self.textEdit.setFontFamily(font)    
-        cursor = self.textEdit.textCursor()
+        self.text_edit.setFontFamily(font)    
+        cursor = self.text_edit.textCursor()
         if not cursor.hasSelection():
             return
         format = cursor.charFormat()
@@ -80,7 +111,7 @@ class WYSIWYGMenu(QToolBar):
 
     def bold(self):
         # grab text cursor 
-        cursor = self.textEdit.textCursor()
+        cursor = self.text_edit.textCursor()
         if (not cursor.hasSelection()):
             return
 
@@ -93,7 +124,7 @@ class WYSIWYGMenu(QToolBar):
     
     def underline(self):
         # grab text cursor
-        cursor = self.textEdit.textCursor()
+        cursor = self.text_edit.textCursor()
         format = cursor.charFormat()
         format.setFontUnderline( not format.fontUnderline()) 
         if (not cursor.hasSelection()):
@@ -102,7 +133,7 @@ class WYSIWYGMenu(QToolBar):
 
     def italic(self):
         # grab text cursor 
-        cursor = self.textEdit.textCursor()
+        cursor = self.text_edit.textCursor()
         if (not cursor.hasSelection()):
             return
         format = cursor.charFormat()
