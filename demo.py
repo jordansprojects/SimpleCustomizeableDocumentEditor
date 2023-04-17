@@ -4,7 +4,6 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 import docx
-import docx2txt
 '''
 
 '''
@@ -27,8 +26,8 @@ class TextEditorBase(QMainWindow):
         open_image_action.triggered.connect(self.open_image)
         file_menu = self.menuBar().addMenu("Customize")
         file_menu.addAction(open_image_action)
-
-
+        self.menuBar().setStyleSheet("background-color : white;")
+        
         #Setup Layout
         layout = QHBoxLayout()
         widget = QWidget(self)
